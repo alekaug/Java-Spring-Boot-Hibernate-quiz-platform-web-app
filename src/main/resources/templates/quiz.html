@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Quiz – Quiz Platform</title>
+  <script rel="script" th:src="@{/js/quiz.js}"></script>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/quiz.css}"/>
+  <style th:inline="text"> body{ background: url([[@{/img/horyzonty-bg.jpg}]]); } </style>
+<body>
+<h1>It is the quiz page.</h1>
+<div id="questions-container">
+  <div class="question" th:each="question, iterator: ${questions}"> <!-- QuestionTile -->
+    <p class="question-type" th:text="${'Question #'+ (iterator.index + 1) + ' (' + (question.type ? 'Opened' : 'Closed') + ')'}"></p>  <!-- Question <number> <type> + TODO: <points-amount> -->
+    <p class="question-content" th:text="${question.content}">What is the solution of 2+2?</p>  <!-- <content> -->
+    <div class="answers-container"> <!-- <answers-list> -->
+      <label th:each="answer: ${question.answers}">
+        <input type="checkbox"/><span th:text="${answer.content}"></span><br>
+      </label> <!-- Depending on question type, input type vary -->
+    </div>
+  </div>
+  <input type="submit" value="Submit your answers" id="submit-answers"/>
+</div>
+</body>
+</html>

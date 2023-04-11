@@ -1,0 +1,52 @@
+@media only screen and (max-width: 600px) {
+    body {
+        width: 100%;
+    }
+}
+
+* {
+    color: #fffbde; /* cute af */
+    font-family: Helvetica;
+}
+
+.shadow-font {
+    text-shadow: -1px 1px 2px black;
+}
+
+input[type='submit'] {
+    color:black;
+    background: white;
+    border: 1px solid black;
+    font-weight: bold;
+    box-shadow: 3px 2px;
+}
+
+/* Mouse down */
+input[type='submit']:active:hover {
+    box-shadow: 2px 1px;
+}
+
+/* Hover when enabled */
+input[type='submit']:hover:enabled {
+    cursor: pointer;
+}
+
+/* Completely not working */
+input[type='submit']:disabled {
+    background: gray;
+    box-shadow: 0 0;
+}
+
+input {
+    height: 2em;
+    border: 1px solid black;
+    box-shadow: 0 5px 7px 0 #00000033;
+}
+
+input:invalid {
+    border: 2px solid red;
+}
+
+input[type="text"] {
+    color: black;
+}

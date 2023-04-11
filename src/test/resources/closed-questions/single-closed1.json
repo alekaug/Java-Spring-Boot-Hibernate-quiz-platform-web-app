@@ -1,0 +1,18 @@
+{
+  "content": "What is the meaning of life?",
+  "answers": [
+    {
+      "content": "24",
+      "correct": false
+    },
+    {
+      "content": "21",
+      "correct": false
+    },
+    {
+      "content": "42",
+      "correct": true
+    }
+  ],
+  "type": false
+}

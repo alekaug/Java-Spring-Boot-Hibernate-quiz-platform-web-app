@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>Homepage – Quiz Platform</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
+    <script rel="script" th:src="@{/js/index.js}"></script>
+    <style th:inline="text"> body{ background: url([[@{/img/horyzonty-bg.jpg}]]); } </style>
+</head>
+<body>
+<h1 class="shadow-font">Hello, <span th:text="${name}"/>!</h1>
+<p class="shadow-font">Tell me your name, and off we go.</p>
+<label class="shadow-font">Your name:&nbsp;<input id="name" type="text" placeholder="Your name" required/></label>
+<input id="next-button" type="submit" value="Next"/>
+</body>
+</html>

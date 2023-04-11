@@ -1,0 +1,22 @@
+.error-message {
+    color: red;
+}
+
+input:invalid {
+    border: 2px solid red;
+}
+
+div.question {
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 2px solid black;
+}
+
+.util-button {
+    margin: 0;
+    float: right;
+}
+
+p.question-content {
+    margin: 0;
+}
