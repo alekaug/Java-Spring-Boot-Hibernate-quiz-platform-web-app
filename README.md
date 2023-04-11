@@ -15,3 +15,15 @@ Spring Boot web application solution for creating and sharing quizes.
     - [ ] Tries table
   - [ ] Implement all types of tests
   - [ ] Implement frontend
+
+## Tech stack
+### Backend
+  - Java 17
+  - PostgreSQL
+  - Hibernate
+
+## Frontend
+  - JavaScript
+  - HTML
+  - CSS
+  - Thymeleaf
