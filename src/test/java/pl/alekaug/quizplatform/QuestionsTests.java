@@ -25,7 +25,7 @@ import static pl.alekaug.quizplatform.util.ResourceReader.readResource;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class QuestionsTest {
+public class QuestionsTests {
     /** Failure messages */
     private static final String EXCEPTION_EXPECTED_MESSAGE = "Exception was expected.";
     private static final String EXCEPTION_NOT_EXPECTED_MESSAGE = "Exception was not expected.";
@@ -129,8 +129,22 @@ public class QuestionsTest {
     }
 
     @Test
-    @Deprecated
+    @Disabled
     void modifyNotExistingQuestion() {
 
+    }
+
+    /** Tests focused more on answers validity in closed-type questions. */
+
+    @Test
+    @Disabled
+    void addAnswerWithoutContent() {
+        // TODO: To do
+    }
+
+    @Test
+    @Disabled
+    void addAnswerWithoutCorrectness() {
+        // TODO: To do
     }
 }
