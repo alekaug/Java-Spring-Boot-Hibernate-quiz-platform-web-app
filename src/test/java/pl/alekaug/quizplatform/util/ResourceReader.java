@@ -1,9 +1,22 @@
 package pl.alekaug.quizplatform.util;
 
-import java.io.File;
+import pl.alekaug.quizplatform.QuestionsTest;
 
-public class ResourceReader {
-    public static String readResource(String path) {
-        return "";
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+public abstract class ResourceReader {
+    public static String readResource(String path) throws Exception {
+        try (InputStream input = QuestionsTest.class.getResourceAsStream(path)) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            return stringBuilder.toString();
+        }
     }
 }

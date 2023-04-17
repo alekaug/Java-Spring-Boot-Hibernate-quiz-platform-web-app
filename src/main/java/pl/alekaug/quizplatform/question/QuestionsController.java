@@ -20,7 +20,7 @@ public class QuestionsController {
     public QuestionsController() { /* NoOp */ }
 
     @GetMapping( name = "Get question by id.", path = "/{" + RestConstants.QUESTION_PATH_ID_PATH + "}" )
-    public Optional<Question> getById(@PathVariable(RestConstants.QUESTION_PATH_ID_PATH) int questionId) {
+    public Optional<Question> getById(@PathVariable(RestConstants.QUESTION_PATH_ID_PATH) Long questionId) {
         try {
             final String debugMsg = "Trying to get a question by id = %d.".formatted(questionId);
             logger.debug(debugMsg);
