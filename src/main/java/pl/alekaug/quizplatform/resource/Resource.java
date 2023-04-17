@@ -14,11 +14,11 @@ import static pl.alekaug.quizplatform.constants.DatabaseConstants.*;
     @JsonIgnore
     private long id;
 
-    @Column( name = RESOURCE_URL_COLUMN, nullable = false )
+    @Column(name = RESOURCE_URL_COLUMN, nullable = false)
     private String url;
 
-    @Column( name = RESOURCE_TYPE_COLUMN, nullable = false )
-    @Enumerated( EnumType.ORDINAL )
+    @Column(name = RESOURCE_TYPE_COLUMN, nullable = false)
+    @Enumerated(EnumType.ORDINAL)
     private Type type;
 
     public enum Type {
