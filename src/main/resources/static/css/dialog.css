@@ -1,0 +1,88 @@
+/* When dialog is opened */
+body {
+    /* overflow: hidden; */
+}
+
+dialog h1 {
+    margin-top: 0;
+}
+
+p, ul {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+dialog {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0);
+    border: 0;
+    padding: 0;
+}
+
+#dialog-front {
+    border: 3px solid black;
+    background: rgb(249, 249, 249);
+    padding: 2em;
+    width: 70%;
+    filter: drop-shadow(0 5px 4px rgba(0, 0, 0, 0.3));
+
+    /* Positioning */
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#name-container {
+    display: flex;
+    padding: 1em 1em 0 1em;
+    justify-content: center;
+    align-content: space-between;
+    flex-wrap: wrap;
+}
+
+#name-container * {
+    padding: 1em;
+}
+
+#name-container input {
+    margin-right: 1em;
+}
+
+label input[type='checkbox'] *, label input[type='radio']::before {
+    content: ' ';
+}
+
+#dialog-back {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+}
+
+.blurred {
+    background: #0004;
+    backdrop-filter: blur(10px) grayscale(0.7);
+}
+
+
+/*************************/
+/* When dialog is closed */
+body {
+    overflow: auto;
+}
+
+/*************************/
+
+@media only screen and (max-width: 700px) {
+    dialog {
+        font-size: 70%; 
+    }
+    
+    #name-container * { /* TODO: There has to be another way to scale the font */
+        font-size: 70%;
+    }
+}

@@ -18,15 +18,15 @@ public abstract class DatabaseConstants {
     public static final String RESOURCE_ID_COLUMN = "r_id";
     public static final String RESOURCE_URL_COLUMN = "url";
     public static final String RESOURCE_TYPE_COLUMN = "resource_type";
+    public static final String RESOURCE_CAPTION_COLUMN = "caption";
 
     /** Sessions */
     public static final String SESSIONS_TABLE = "sessions";
     public static final String SESSION_ID_COLUMN = "s_id";
     public static final String SESSION_USERNAME_COLUMN = "username";
-    public static final String SESSION_TIME_STARTED_COLUMN = "time_started";
-    public static final String SESSION_TIME_FINISHED_COLUMN = "time_finished";
+    public static final String PASSED_COLUMN = "passed";
 
-    /** Tries */
-    public static final String TRIES_TABLE = "tries";
-    public static final String TRY_CONTENT = "try_content";
+    /** Ranking */
+    public static final String RANKING_TABLE = "rankings";
+    public static final String POINTS_COLUMN = "points";
 }

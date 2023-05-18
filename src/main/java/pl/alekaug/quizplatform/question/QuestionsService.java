@@ -8,6 +8,8 @@ import pl.alekaug.quizplatform.answer.AnswersService;
 import pl.alekaug.quizplatform.question.exceptions.ClosedQuestionHavingNoAnswers;
 import pl.alekaug.quizplatform.question.exceptions.OpenedQuestionHavingAnswers;
 
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,17 +26,27 @@ public class QuestionsService {
     }
 
     public List<Question> getAll() {
-        return questionsRepository.findAll();
+        final List<Question> questions = questionsRepository.findAll();
+        questions.sort(Comparator.comparing(Question::getId));
+        return questions;
+    }
+
+
+    public List<Question> getAllClosed() {
+        return questionsRepository.getAllClosed();
     }
 
     public Question add(Question question) throws IllegalArgumentException,
             ClosedQuestionHavingNoAnswers,
-            OpenedQuestionHavingAnswers {
+            OpenedQuestionHavingAnswers,
+            ClosedQuestionHavingTooManyAnswers {
         /* First, add the question itself... */
         Question q = questionsRepository.save(question);
         /* Check its validity issues. */
         checkQuestionValidity(question);
         /* And add all its answers. */
+        if (question.getAnswers() == null)
+            return q;
         for (Answer answer : question.getAnswers())
             answersService.add(answer);
         return q;
@@ -42,7 +54,8 @@ public class QuestionsService {
 
     public Question replace(long id, Question question) throws IllegalArgumentException,
             OpenedQuestionHavingAnswers,
-            ClosedQuestionHavingNoAnswers {
+            ClosedQuestionHavingNoAnswers,
+            ClosedQuestionHavingTooManyAnswers {
         // TODO: Check links between changing question's answer objects
         Optional<Question> q = questionsRepository.findById(id);
         if (q.isEmpty())
@@ -65,18 +78,35 @@ public class QuestionsService {
     }
 
     public Integer removeAll() {
-        /* First, delete all questions' dependent answers... */
-        answersService.removeAll();
+//        /* First, delete all questions' dependent answers... */
+//        answersService.removeAll();
         /* Then remove all questions. */
         return questionsRepository.deleteAllReturnNumber();
     }
 
-    private void checkQuestionValidity(Question question) throws ClosedQuestionHavingNoAnswers,
-            OpenedQuestionHavingAnswers {
-        /* If closed question does not contain answers, throw an appropriate exception. */
-        if (Boolean.TRUE.equals(!question.getType()) && question.getAnswers().isEmpty())
-            throw new ClosedQuestionHavingNoAnswers("No answers attached to closed-type question.");
-        else if(Boolean.TRUE.equals(question.getType()) && !question.getAnswers().isEmpty())
+    private void checkQuestionValidity(Question question)
+            throws ClosedQuestionHavingNoAnswers,
+            OpenedQuestionHavingAnswers,
+            ClosedQuestionHavingTooManyAnswers {
+        final Integer type = question.getType();
+        final Collection<Answer> answers = question.getAnswers();
+        boolean empty = false;
+        if (answers == null || answers.size() == 0) empty = answers.isEmpty();
+        /* Opened question having any answers */
+        if (type == 0 && !empty)
             throw new OpenedQuestionHavingAnswers("No answers allowed in opened-type question.");
+        /* Closed (single) question having less than 2 answers */
+        else if (type == 1 && empty) {
+            if (answers.size() < 2)
+                throw new ClosedQuestionHavingNoAnswers("No sufficient amount of answers attached to closed-type question. (at least two for closed-single)");
+            if (answers.stream().filter(Answer::isCorrect).count() > 1)
+                throw new ClosedQuestionHavingTooManyAnswers();
+        }
+        /* Opened question having any answers */
+        else if (type == 2 && empty)
+            throw new ClosedQuestionHavingNoAnswers("No sufficient amount of answers attached to closed-type question. (at least one for closed-multi)");
+        else if (type < 0 || type > 2) {
+            throw new RuntimeException("Wrong question type (0: opened, 1: closed (single), 2: closed (multi)). Received = " + type);
+        }
     }
 }

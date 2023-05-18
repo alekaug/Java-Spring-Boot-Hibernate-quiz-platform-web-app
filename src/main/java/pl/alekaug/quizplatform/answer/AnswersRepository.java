@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AnswersRepository extends JpaRepository<Answer, Long> {
     @Modifying
-    @Query(value = "delete from answers;", nativeQuery = true)
+    @Query(value = "truncate answers restart identity cascade;", nativeQuery = true)
     Integer deleteAllReturnNumber();
 }

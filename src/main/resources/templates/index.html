@@ -1,17 +1,94 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <title>Homepage – Quiz Platform</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
-    <script rel="script" th:src="@{/js/index.js}"></script>
-    <style th:inline="text"> body{ background: url([[@{/img/horyzonty-bg.jpg}]]); } </style>
-</head>
-<body>
-<h1 class="shadow-font">Hello, <span th:text="${name}"/>!</h1>
-<p class="shadow-font">Tell me your name, and off we go.</p>
-<label class="shadow-font">Your name:&nbsp;<input id="name" type="text" placeholder="Your name" required/></label>
-<input id="next-button" type="submit" value="Next"/>
-</body>
+    <!-- <link rel="icon" type="image/svg+xml" href="/logo.svg"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/dialog.css">
+    <link rel="stylesheet" href="/css/quiz.css">
+    <script src="/js/progress.js"></script>
+    <script src="/js/quiz.js"></script>
+    <title>Quiz | Quiz Platform</title>
+  </head>
+  <body>
+    <dialog>
+      <div id="dialog-back" class="blurred"></div>
+      <div id="dialog-front">
+        <header>
+          <h1>Quiz Platform Guide</h1>
+        </header>
+        <p>Welcome to the Quiz Platform guide!</p>
+        <p>You are about to take part in the quiz, where there are basically two types of questions:</p>
+        <ul>
+          <li>
+            <strong>Closed-type</strong> – those questions are being assessed. You receive points, whenever
+            you get the answer(s) right. It is simple as that. That kind of questions can be either single- or multichoice.
+          </li>
+          <li>
+            <strong>Opened-type</strong> – there are no available method of assessment regarding that kind of questions. An author of
+            the quiz can assess, what answers are right and what are not. It's up for them, what type of assessment is going to be conducted.
+          </li>
+        </ul>
+        <p>If you got acquainted with the guide, choose your name and press the button below to start.</p>
+        <p> We wish you good luck!</p>
+        <div id="name-container">
+          <input type="text" placeholder="Your name" autocomplete="off" autofocus required size="32"><button>Continue</button>
+        </div>
+      </div>
+    </dialog>
+    <div id="main-container">
+      <main>
+        <progress></progress>
+        <form id="quiz-form" method="POST" action="#" th:action="@{/}">
+          <fieldset class="question" th:each="question : ${questions}">
+            <h2 th:text="'Question ' + ${question.getId()}"></h2>
+            <p th:text="${question.getContent()}"></p>
+
+            <div th:if="${question.resource != null}" th:switch="${question.resource}">
+              <figure>
+                <img class="media" th:case="*{type == 0}" th:src="*{resource.url}">
+                <audio class="media" th:case="*{type == 1}" controls>
+                  <source th:src="*{resource.url}" type="audio/mpeg">
+                  Your browser does not support <em>audio</em> elements.
+                </audio>
+                <video class="media" th:case="*{type == 2}" controls>
+                  <source th:src="*{resource.url}">
+                  Your browser does not support <em>video</em> elements.
+                </video>
+                <figcaption class="media-caption" th:text="*{resource.caption}"></figcaption>
+              </figure>
+            </div>
+
+            <div th:switch="${question.type}">
+              <div class="answer" th:case="1">
+                <label th:each="answer : ${question.answers}">
+                  <input type="radio" th:name="${question.id}" th:value="${answer.id}" required th:text="'&nbsp;' + ${answer.content}">
+                </label>
+              </div>
+
+              <div class="answer" th:case="2">
+                <label th:each="answer : ${question.answers}">
+                  <input type="checkbox" th:name="${question.id}" th:value="${answer.id}" th:text="'&nbsp;' + ${answer.content}">
+                </label>
+              </div>
+
+              <div class="answer" th:case="*">
+                <label>Your answer:
+                  <textarea class="opened-answer" th:name="${question.id}" maxlength="2500" autocomplete="off"></textarea>
+                </label>
+              </div>
+            </div>
+          </fieldset>
+          <!-- Submit button -->
+          <input id="submit" type="submit" value="Submit">
+        </form>
+      </main>
+      <footer>
+        <a href="https://linkedin.com/in/alekaugustyniak">
+          <img class="signature" th:src="@{/media/signature.svg}" src="/signature.svg" alt="Aleksander Augustyniak @ LinkedIn">
+        </a>
+      </footer>
+    </div>
+  </body>
 </html>

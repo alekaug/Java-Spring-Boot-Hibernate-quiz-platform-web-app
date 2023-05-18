@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import pl.alekaug.quizplatform.answer.Answer;
 import pl.alekaug.quizplatform.question.exceptions.ClosedQuestionHavingNoAnswers;
+import pl.alekaug.quizplatform.question.exceptions.OpenedQuestionHavingAnswers;
+import pl.alekaug.quizplatform.resource.Resource;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,21 +22,28 @@ import static pl.alekaug.quizplatform.constants.DatabaseConstants.*;
     @JsonIgnore
     private Long id;
 
-    @Column( name = QUESTION_CONTENT_COLUMN, nullable = false )
+    @Column(name = QUESTION_CONTENT_COLUMN, nullable = false)
     private String content;
-    @Column( name = QUESTION_TYPE_COLUMN, nullable = false )
-    private Boolean type;
+    @Column(name = QUESTION_TYPE_COLUMN, nullable = false)
+    private Integer type;
 
-    @OneToMany//(orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name=QUESTION_ID_COLUMN, nullable = false)
-    private Set<Answer> answers = null;
+    private Set<Answer> answers;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="q_id", referencedColumnName = "r_id")
+    private Resource resource;
 
     public Question() { }
 
-    public Question(String content, Boolean type, Collection<Answer> answers) throws ClosedQuestionHavingNoAnswers {
+    public Question(String content, Integer type, Collection<Answer> answers)
+            throws ClosedQuestionHavingNoAnswers, OpenedQuestionHavingAnswers {
         this.content = content;
         this.type = type;
-        if (Boolean.TRUE.equals(!type && answers.isEmpty()) || answers == null)
+        if (type == 0 && !answers.isEmpty())
+            throw new OpenedQuestionHavingAnswers("No answers allowed in opened-type questions.");
+        else if (type == 1 || type == 2 && answers.isEmpty())
             throw new ClosedQuestionHavingNoAnswers("The are no answers provided for closed-type question.");
         this.answers = new HashSet<>(answers);
     }

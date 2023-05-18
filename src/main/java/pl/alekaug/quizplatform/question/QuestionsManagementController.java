@@ -25,7 +25,7 @@ public class QuestionsManagementController {
         logger.debug(receivedQuestion);
         try {
             return questionsService.add(question).getId();
-        } catch (OpenedQuestionHavingAnswers | ClosedQuestionHavingNoAnswers e) {
+        } catch (OpenedQuestionHavingAnswers | ClosedQuestionHavingNoAnswers | ClosedQuestionHavingTooManyAnswers e) {
             logger.error(e.getMessage());
             logger.error(receivedQuestion);
             return -1L;
@@ -39,7 +39,7 @@ public class QuestionsManagementController {
         logger.debug(receivedQuestion);
         try {
             return questionsService.replace(questionId, question).getId();
-        } catch (OpenedQuestionHavingAnswers | ClosedQuestionHavingNoAnswers e) {
+        } catch (OpenedQuestionHavingAnswers | ClosedQuestionHavingTooManyAnswers | ClosedQuestionHavingNoAnswers e) {
             logger.error(e.getMessage());
             final String errorMsg = "There was an issue with removing question of id %d.".formatted(questionId);
             logger.error(errorMsg);

@@ -7,6 +7,11 @@ public class AnswerBuilder {
         this.answer = new Answer();
     }
 
+    public AnswerBuilder id(Long id) {
+        answer.setId(id);
+        return this;
+    }
+
     public AnswerBuilder content(String content) {
         answer.setContent(content);
         return this;

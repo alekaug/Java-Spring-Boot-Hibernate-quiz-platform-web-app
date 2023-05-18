@@ -1,8 +1,7 @@
-// TODO: If modal visible, overflow hidden; else auto
-// TODO: Tracking modal state (open/closed) with global variable
-
-
 addEventListener('DOMContentLoaded', () => {
+    const PURGE_URL = '/api/questions/manage/purge';
+    const MANAGE_URL = '/api/questions/manage';
+
     class Modal {
         modalContainer = document.getElementById('modal-container');
         modalClose = this.modalContainer.querySelector('#close-button');
@@ -23,16 +22,24 @@ addEventListener('DOMContentLoaded', () => {
             return this;
         }
 
-        show = (title, content) => {
+        show = () => {
             this.setVisible(true);
+            document.body.style.overflow = 'hidden';
+        }
+
+        showContent = (title, content) => {
             this.modalTitle.innerText = title;
             // Content is made of message, and available buttons (?)
             this.modalContent.innerText = content.message;
+            Modal.instance.show();
+        }
+
+        showHTML = (html) => {
+            this.modalContent.innerHTML = html;
+            Modal.instance.show();
         }
 
         setVisible = (bool) => {
-            if (bool === this.visible)
-                return;
             this.visible = bool;
             this.modalContainer.opacity = this.visible ? 1 : 0;
             this.modalContainer.hidden = !this.visible;
@@ -40,6 +47,7 @@ addEventListener('DOMContentLoaded', () => {
 
         close = () => {
             Modal.instance.setVisible(false);
+            document.body.style.overflow = 'auto';
         }
     }
 
@@ -58,23 +66,18 @@ addEventListener('DOMContentLoaded', () => {
             if (parentNode == null)
                 return;
             const questionId = parentNode.getAttribute('data-id');
-            const response = await fetch(`/api/questions/manage?id=${questionId}`, {
+            const response = await fetch(`${MANAGE_URL}?id=${questionId}`, {
                 method: 'DELETE'
             });
             const result = await response.json();
             if (result === true) {
-                modal.show('Success!', { message: 'Question removed successfully!' });
+                modal.showContent('Success!', { message: 'Question removed successfully!' });
                 const parentNode = e.target.parentNode;
                 if (parentNode != null)
                     parentNode.remove();
             }
             else
-                modal.show('Warning.', { message: 'There was an issue deleting a question' });
-        });
-
-        // TODO: Implement
-        e.querySelector('#questions-edit-button').addEventListener('click', () => {
-
+                modal.showContent('Warning.', { message: 'There was an issue deleting a question. Try refreshing this page.' });
         });
     });
 
@@ -83,59 +86,72 @@ addEventListener('DOMContentLoaded', () => {
 
     // Containers
     const closedQuestionContainer = document.getElementById('closed-questions-container');
-    const wordsJumbleQuestionContainer = document.getElementById('words-jumble-questions-container');
 
     // Utility functions
     const hide = (element) => element.hidden = true;
     const unhide = (element) => element.hidden = false;
 
-    const checkFormValidity = () => {
-        const state = questionContentTextbox.validity.valid;
-        addQuestionButton.disabled = !state;
-        questionContentError.hidden = state;
-    };
+    // const checkFormValidity = () => {
+    //     const state = questionContentTextbox.validity.valid;
+    //     addQuestionButton.disabled = !state;
+    //     questionContentError.hidden = state;
+    // };
 
     const checkQuestionType = () => {
         switch (questionTypeContentDropdown.value) {
-            case 'closed':
-                hide(wordsJumbleQuestionContainer);
-                unhide(closedQuestionContainer);
-                break;
-            case 'words-jumble':
-                unhide(wordsJumbleQuestionContainer);
-                hide(closedQuestionContainer);
-                break;
             case 'opened':
-            default:
-                hide(wordsJumbleQuestionContainer);
                 hide(closedQuestionContainer);
+                break;
+            case 'closed-s':
+            case 'closed-m':
+            default:
+                unhide(closedQuestionContainer);
                 break;
         }
     };
-    checkFormValidity();
+    // checkFormValidity();
     checkQuestionType();
 
-    questionContentTextbox.addEventListener('keyup', checkFormValidity);
+    // questionContentTextbox.addEventListener('keyup', checkFormValidity);
     questionTypeContentDropdown.addEventListener('change', checkQuestionType);
 
     const submitQuestion = () => {
         const content = questionContentTextbox.value;
-        const type = questionTypeContentDropdown.value !== 'closed';
-        const answers = [
-            {
-                "content": "Me, having correct answer.",
-                "correct": true
-            },
-            {
-                "content": "This answers is also correct.",
-                "correct": true
-            },
-            {
-                'content': 'This answer is absolutely incorrect. Don\'t you dare touch that button.',
-                'correct': false
-            }
-        ];
-        fetch('/api/questions/manage', {
+        const selectVal = questionTypeContentDropdown.value;
+        const type = selectVal === 'opened' ? 0 : selectVal === 'closed-s' ? 1 : 2;
+        var answers = [];
+        if (type === 1)
+            answers = [
+                {
+                    "content": "Me, having only correct answer.",
+                    "correct": true
+                },
+                {
+                    "content": "This answers is not correct.",
+                    "correct": false
+                },
+                {
+                    'content': 'This answer is absolutely incorrect. Don\'t you dare touch that button.',
+                    'correct': false
+                }
+            ];
+        else if (type === 2)
+            answers = [
+                {
+                    "content": "Me, having correct answer.",
+                    "correct": true
+                },
+                {
+                    "content": "This answers is also correct.",
+                    "correct": true
+                },
+                {
+                    'content': 'This answer is absolutely incorrect. Don\'t you dare touch that button.',
+                    'correct': false
+                }
+            ];
+
+        fetch(MANAGE_URL, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -151,21 +167,61 @@ addEventListener('DOMContentLoaded', () => {
             .then(() => location.reload());
 
     };
-    addQuestionButton.addEventListener('click', submitQuestion);
-
     const removeAllQuestions = async () => {
-        const response = await fetch('/api/questions/manage/purge', {
+
+        const response = await fetch(PURGE_URL, {
             method: 'DELETE'
         });
+        location.reload();
+        return; // TODO: Temporary solution, resolve the way it ends
+
         const result = await response.json();
         if (result > 0) {
             document.querySelectorAll('.question').forEach(el => el.remove());
-            modal.show('Success!', { message: `${result} questions were deleted successfully.` });
+            modal.showContent('Success!', { message: `${result} questions were deleted successfully.` });
         }
         else
-            modal.show('Warning', { message: 'None of the questions were deleted.' });
+            modal.showContent('Warning', { message: 'None of the questions were deleted.' });
     };
     removeQuestionsButton.addEventListener('click', removeAllQuestions);
 
-    quizPreviewButton.addEventListener('click', () => location.href = '/quiz'); // TODO: Set location to '/manager/preview'
+    quizPreviewButton.addEventListener('click', () => location.href = '/'); // TODO: Set location to '/manager/preview'
+
+    // Question creator
+    const questionCreatorHTML = `
+        <div id="question-creator">
+                <div>
+                    Question content:
+                    <label>
+                        <input name="question-content" type="text">
+                    </label>
+                </div>
+                <div>
+                    Question type:
+                    <label>
+                        <select id="question-type" name="question-type">
+                            <option name="0">Open</option>
+                            <option name="1">Closed (single)</option>
+                            <option name="2">Closed (multi)</option>
+                        </select>
+                    </label>
+                </div>
+                <div>
+                    Possible answers:
+                    <label>
+                        <input name="correct" type="checkbox">
+                    </label>
+                    <label>
+                        <input name="answer-content" type="text">
+                    </label>
+                    <button>+</button>
+                </div>
+                <input type="submit" value="Create">
+            </div>
+    `;
+    const openQuestionCreator = () => {
+        modal.showHTML(questionCreatorHTML);
+    };
+    addQuestionButton.addEventListener('click', openQuestionCreator);
+
 });

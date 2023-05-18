@@ -57,7 +57,7 @@ public class QuestionsTests {
         Question question = Question.builder()
                 .content("Closed-type question without answers is not allowed.")
                 .answer(null)
-                .type(false)
+                .type(1)
                 .build();
         ObjectMapper mapper = new ObjectMapper();
         assertThrows(ServletException.class, () -> {

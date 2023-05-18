@@ -3,13 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>Questions management – Quiz Platform</title>
+    <title>Management Panel | Quiz Platform</title>
     <link th:href="@{/css/manager.css}" type="text/css" rel="stylesheet"/>
     <script th:src="@{/js/manager.js}"></script>
     <link th:href="@{/css/modal.css}" type="text/css" rel="stylesheet"/>
+    <link th:href="@{/css/main.css}" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-<!-- Modal window test -->
+<div id="questions-container">
+    <div class="question" th:each="question, iterator: ${questions}" th:attr="data-id=${question.getId()}">
+        <button id="questions-remove-button" class="util-button" value="remove" title="Remove question">X</button>
+        <table>
+            <tr>
+                <td colspan="10">
+                    <strong th:text="${question.content}"></strong>
+                </td>
+            </tr>
+            <tr class="answer" th:each="answer: ${question.answers}" th:attr="data-id=${answer.id}">
+                <td colspan="2">
+                    <label>
+                        <input type="checkbox" th:checked="${answer.isCorrect}"/>
+                    </label>
+                </td>
+                <td colspan="6" th:text="${answer.content}"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+<form>
+    <label>Question content:&nbsp;
+        <textarea type="text" id="question-content" required></textarea><br>
+    </label>
+    <p class="error-message" id="content-error">Question must have a content.</p> <!-- Appears on validity issue -->
+    <label>Question type:&nbsp; <!-- Depending on question type, question answers are adjusted -->
+        <select name="question-type" id="question-type">
+            <option value="opened">Opened</option>
+            <option value="closed-s">Closed (single)</option>
+            <option value="closed-m">Closed (multi)</option>
+        </select>
+    </label>
+    <div id="closed-questions-container">
+        <label>Answer correctness:&nbsp;
+            <select name="answer-correct">
+                <option value="correct">Correct</option>
+                <option value="incorrect">Incorrect</option>
+            </select>
+        </label>
+    </div>
+    <input type="button" value="Add question" id="add-question-button"/>
+    <input type="button" value="Delete all questions" id="remove-questions-button"/>
+    <input type="button" value="Quiz preview" id="quiz-preview-button"/>
+</form>
+
 <div id="modal-container">
     <div id="modal-window">
         <div id="modal-bar">
@@ -17,79 +64,9 @@
             <span id="close-button">&times;</span>
         </div>
         <div id="modal-content">
-            <!-- Content goes here -->
+
         </div>
     </div>
 </div>
-
-<div id="questions-container">
-    <div class="question" th:each="question, iterator: ${questions}" th:attr="data-id=${question.getId()}"> <!-- QuestionTile -->
-        <button id="questions-remove-button" class="util-button" value="remove" title="Remove question">X</button>
-        <button id="questions-edit-button" class="util-button" value="edit" title="Edit question">E</button>
-        <table>
-            <tr><td colspan="10"></td></tr> <!-- Question content -->
-            <tr class="answer" th:each="answer: ${question.answers}" th:attr="data-id=${answer.getId()}">
-                <td colspan="2">
-                    <label>
-                        <input type="checkbox" th:checked="${answer.isCorrect}"/>
-                    </label>
-                </td> <!-- is correct switch -->
-                <td colspan="6" th:text="${answer.content}"></td> <!-- answer content -->
-                <td colspan="1">
-                    <button>E</button>
-                </td> <!-- answer edit -->
-                <td colspan="1">
-                    <button>X</button>
-                </td> <!-- answer removes -->
-            </tr> <!-- Question content -->
-            <tr>
-                <td colspan="10"><button>+</button></td>
-            </tr>
-        </table>
-        <button value="edit" title="Edit question">
-            Cancel
-        </button>
-        <button value="remove" title="Remove question">
-            <strong>Submit</strong>
-        </button>
-    </div>
-</div>
-
-
-<!-- TODO: List of existing questions, where the remove and modify buttons are visible in the upper right hand corner.. -->
-<!-- ..and those are distinguished by red cross and yellow pencil icons. -->
-<form> <!-- Part of the list, that is standing out - new question creator -->
-    <label>Question content:&nbsp;
-        <input type="text" id="question-content" required/><br>
-    </label>
-    <p class="error-message" id="content-error">Question must have a content.</p> <!-- Appears on validity issue -->
-    <label>Question type:&nbsp; <!-- Depending on question type, question answers are adjusted -->
-        <select name="question-type" id="question-type">
-            <option value="opened">Opened</option>
-            <option value="closed">Closed</option>
-            <option value="words-jumble">Words jumble</option>
-        </select>
-    </label>
-    <!-- For opened type of question => no possible answers provided (or keyword maybe?) -->
-    <!-- For closed type of question -->
-    <div id="closed-questions-container">
-        <!-- List where each element is: drop-down correctness value, answer content, button to add another question -->
-        <label>Answer correctness:&nbsp;
-            <select name="answer-correct">
-                <option value="correct">Correct</option>
-                <option value="incorrect">Incorrect</option>
-            </select>
-        </label>
-        <!-- For answers amount greater than one, there will be possibility to delete questions with button that will appear. -->
-    </div>
-    <!-- For word-jumble type of question -->
-    <div id="words-jumble-questions-container">
-        <!--  -->
-
-    </div>
-    <input type="button" value="Add question" id="add-question-button"/>
-    <input type="button" value="Delete all questions" id="remove-questions-button"/>
-    <input type="button" value="Quiz preview" id="quiz-preview-button"/>
-</form>
 </body>
 </html>

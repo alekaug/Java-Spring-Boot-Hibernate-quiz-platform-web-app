@@ -13,12 +13,17 @@ public class QuestionBuilder {
         question.setId(null);
     }
 
+    public QuestionBuilder id(Long id) {
+        question.setId(id);
+        return this;
+    }
+
     public QuestionBuilder content(String content) {
         question.setContent(content);
         return this;
     }
 
-    public QuestionBuilder type(Boolean type) {
+    public QuestionBuilder type(Integer type) {
         question.setType(type);
         return this;
     }

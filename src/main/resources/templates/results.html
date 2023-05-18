@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- <link rel="icon" type="image/svg+xml" href="/logo.svg"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/dialog.css">
+    <link rel="stylesheet" href="/css/quiz.css">
+    <script src="/js/progress.js"></script>
+    <script src="/js/quiz.js"></script>
+    <title>Results | Quiz Platform</title>
+</head>
+<body>
+    <h1 th:text="'Congratulations! You\'ve got ' + ${score} + '%'"></h1>
+</body>
+</html>

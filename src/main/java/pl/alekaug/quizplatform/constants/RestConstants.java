@@ -6,4 +6,7 @@ public abstract class RestConstants {
     public static final String QUESTIONS_MANAGEMENT_API_PATH = QUESTIONS_API_PATH + "/manage";
     public static final String QUESTIONS_MANAGEMENT_API_PURGE_SUFFIX = "/purge";
     public static final String QUESTION_PATH_ID_PATH = "id";
+
+    /** Homepage */
+    public static final String SESSION_ID_COOKIE = "sessionId";
 }

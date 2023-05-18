@@ -1,68 +1,92 @@
-@media only screen and (max-width: 600px) {
-    #submit-answers {
-        font-size: 6.36vw;
-    }
-
-    * {
-        font-size: 4vw;
-    }
+/*** Quiz-specific Stylesheet ***/
+/* Form labels are being displayed in block fashion */
+label {
+    display: block;
+    margin-bottom: 0.5em;
 }
 
-* {
-    --bg-color: #FCF2C1;
-    font-family: Helvetica;
-}
-
-body {
-    background: var(--bg-color);
-}
-
-input[type='submit'] {
-    position: sticky;
-    bottom: 20px;
-    right: 20px;
-    float: right;
-    border: 1px solid black;
-    background: white;
-    font-weight: bold;
-    box-shadow: 3px 2px;
-}
-
-input[type='submit']:active:hover {
-    box-shadow: 2px 1px;
-}
-
-#questions-container {
+/* Quiz progress bar on top of the page */
+progress {
+    position: fixed;
+    transform: translateY(-25%);
+    top: 0;
+    left: 0;
     width: 100%;
-    margin: 20px auto;
+    z-index: 1;
+    accent-color: #212121;
+    filter: drop-shadow(0px 0px 6px #21212155);
+}
+
+#quiz-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .question {
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.25);
+    margin: 20px 20px;
+    padding: 1em 2.5em;
     border-radius: 5px;
-    margin: 20px;
+    border: 0;
+    background: rgb(255 255 255);
+    filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.15));
 }
 
-.question.hover {
-    border: 2px solid gray;
+.question h2 {
+    margin: 0 0 0.5em 0;
 }
 
-.question-type {
-    font-weight: bold;
-    margin: 8px 0 0 0;
+.question p {
+    margin: 0 0 0.5em 0;
 }
 
-.question-content {
-    margin: 0 0 8px 0;
+.answer {
+    margin-bottom: 0;
 }
 
-.answers-container {
-    margin: 0;
+.opened-answer {
+    display: block;
+    width: 100%;
+    height: 5rem;
+    resize: vertical;
+    min-height: 5rem;
+    max-height: 10rem;
 }
 
-input[type='checkbox'] {
+.media {
     border: 2px solid black;
-    background: #F5F5F5;
+    display: block;
+    margin: 0 auto 2em auto;
+    width: 75%;
+    background-color: #f1f3f4;
+}
+
+.media-caption {
+    text-align: center;
+    font-size: 0.77rem;
+    color: gray;
+    font-style: italic;
+    margin-top: 0.5em;
+}
+
+textarea {
+    font-size: 1em;
+    border: 2px solid black;
+}
+
+#submit {
+    width: 10em;
+    height: 2em;
+    margin: auto;
+}
+
+figure {
+    margin: 4em 0;
+}
+
+/* Mobile phones Stylesheet */
+@media only screen and (max-width: 1000px) {
+    .media {
+        width: 100%;
+    }
 }

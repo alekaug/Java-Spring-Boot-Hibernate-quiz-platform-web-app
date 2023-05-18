@@ -1,0 +1,18 @@
+{
+  "content": "What colors are visible in the image?",
+  "answers": [
+    {
+      "content": "Black",
+      "correct": true
+    },
+    {
+      "content": "Gray",
+      "correct": true
+    },
+    {
+      "content": "White",
+      "correct": true
+    }
+  ],
+  "type": 2
+}
