@@ -5,16 +5,17 @@ Spring Boot web application solution for creating and sharing quizes.
   - [x] ~Swagger UI support for REST API lookup~
   - [ ] Implement different question types
     - [x] ~Closed question~
-    - [ ] Opened question
+    - [x] ~Opened question~
     - [ ] Words jumble
   - [ ] Add credentials support for questions management
   - [ ] Refine full database models
-    - [ ] Questions table
-    - [ ] Answers table
+    - [x] ~Questions table~
+    - [x] ~Answers table~
     - [ ] Sessions table
-    - [ ] Tries table
   - [ ] Implement all types of tests
   - [ ] Implement frontend
+    - [x] ~Quiz page~
+    - [ ] Management page 
 
 ## Tech stack
 ### Backend
