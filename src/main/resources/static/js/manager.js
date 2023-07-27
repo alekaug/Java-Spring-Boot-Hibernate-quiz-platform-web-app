@@ -115,13 +115,25 @@ addEventListener('DOMContentLoaded', () => {
     // questionContentTextbox.addEventListener('keyup', checkFormValidity);
     questionTypeContentDropdown.addEventListener('change', checkQuestionType);
 
-    const submitQuestion = () => {
+    const submitQuestion = (e) => {
+        e.preventDefault();
         const content = questionContentTextbox.value;
         const selectVal = questionTypeContentDropdown.value;
         const type = selectVal === 'opened' ? 0 : selectVal === 'closed-s' ? 1 : 2;
         var answers = [];
-        if (type === 1)
-            answers = [
+        if (type === 1) {
+            const answersArray = document.querySelectorAll('.new-answer-element');
+            // Only one correct answer validation
+            var correctAmount = 0;
+            answersArray.forEach(a => {
+                const content = a.querySelector('input[name="answer-content"]').value;
+                const correct = a.querySelector('input[name="correct"]').checked;
+                if (correct === true) correctAmount++;
+                if (correctAmount > 1) return;
+                answers.push({"content": content, "correct": correct});
+            });
+            if (correctAmount !== 1) return;
+            /*answers = [
                 {
                     "content": "Me, having only correct answer.",
                     "correct": true
@@ -134,9 +146,21 @@ addEventListener('DOMContentLoaded', () => {
                     'content': 'This answer is absolutely incorrect. Don\'t you dare touch that button.',
                     'correct': false
                 }
-            ];
-        else if (type === 2)
-            answers = [
+            ];*/
+        }
+        else if (type === 2) {
+            const answersArray = document.querySelectorAll('.new-answer-element');
+            // Only one correct answer validation
+            var correctAmount = 0;
+            answersArray.forEach(a => {
+                const content = a.querySelector('input[name="answer-content"]').value;
+                const correct = a.querySelector('input[name="correct"]').checked;
+                if (correct === true) correctAmount++;
+                answers.push({"content": content, "correct": correct});
+            });
+            if (correctAmount < 2) return;
+
+            /*answers = [
                 {
                     "content": "Me, having correct answer.",
                     "correct": true
@@ -149,8 +173,8 @@ addEventListener('DOMContentLoaded', () => {
                     'content': 'This answer is absolutely incorrect. Don\'t you dare touch that button.',
                     'correct': false
                 }
-            ];
-
+            ];*/
+        }
         fetch(MANAGE_URL, {
             method: 'PUT',
             headers: {
@@ -222,6 +246,45 @@ addEventListener('DOMContentLoaded', () => {
     const openQuestionCreator = () => {
         modal.showHTML(questionCreatorHTML);
     };
-    addQuestionButton.addEventListener('click', openQuestionCreator);
+    // addQuestionButton.addEventListener('click', openQuestionCreator);
+    addQuestionButton.addEventListener('click', submitQuestion);
 
+    /* New question creator */
+    const MIN_ANSWERS_AMOUNT = 1;
+    const MAX_ANSWERS_AMOUNT = 10;
+    const answersList = document.getElementById('answers-list');
+    const newAnswerButton = document.getElementById('new-answer-button');
+    const deleteAnswerButton = document.getElementById('delete-answer-button');
+    newAnswerButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const newElement = document.createElement('fieldset');
+        newElement.classList.add('new-answer-element');
+        newElement.setAttribute('name', 'answer[]');
+        const answerHTML = '<label>Answer content<span class="required"></span><input name="answer-content" type="text"></label><label><input name="correct" type="checkbox">&nbsp;Is correct?<span class="required"></span></label>';
+        newElement.innerHTML = answerHTML;
+
+        if (answersList.childElementCount >= MAX_ANSWERS_AMOUNT - 1) {
+            answersList.append(newElement);
+            newAnswerButton.disabled = true;
+            return;
+        }
+        answersList.append(newElement);
+        deleteAnswerButton.disabled = false;
+    });
+
+    deleteAnswerButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        if (answersList.childElementCount === MIN_ANSWERS_AMOUNT + 1) {
+            answersList.lastChild.remove();
+            deleteAnswerButton.disabled = true;
+            return;
+        }
+        if (answersList.childElementCount <= MIN_ANSWERS_AMOUNT) return;
+        answersList.lastChild.remove();
+        if (answersList.childElementCount < MAX_ANSWERS_AMOUNT)
+            newAnswerButton.disabled = false;
+
+    });
 });

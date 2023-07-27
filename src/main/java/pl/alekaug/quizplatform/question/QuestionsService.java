@@ -1,11 +1,11 @@
 package pl.alekaug.quizplatform.question;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.alekaug.quizplatform.answer.Answer;
 import pl.alekaug.quizplatform.answer.AnswersService;
 import pl.alekaug.quizplatform.question.exceptions.ClosedQuestionHavingNoAnswers;
+import pl.alekaug.quizplatform.question.exceptions.ClosedQuestionHavingTooManyAnswersException;
 import pl.alekaug.quizplatform.question.exceptions.OpenedQuestionHavingAnswers;
 
 import java.util.Collection;
@@ -16,10 +16,13 @@ import java.util.Optional;
 @Service
 @Transactional
 public class QuestionsService {
-    @Autowired
-    private QuestionsRepository questionsRepository;
-    @Autowired
-    private AnswersService answersService;
+    private final QuestionsRepository questionsRepository;
+    private final AnswersService answersService;
+
+    public QuestionsService(QuestionsRepository questionsRepository, AnswersService answersService) {
+        this.questionsRepository = questionsRepository;
+        this.answersService = answersService;
+    }
 
     public Optional<Question> getById(long id) throws IllegalArgumentException {
         return questionsRepository.findById(id);
@@ -39,7 +42,7 @@ public class QuestionsService {
     public Question add(Question question) throws IllegalArgumentException,
             ClosedQuestionHavingNoAnswers,
             OpenedQuestionHavingAnswers,
-            ClosedQuestionHavingTooManyAnswers {
+            ClosedQuestionHavingTooManyAnswersException {
         /* First, add the question itself... */
         Question q = questionsRepository.save(question);
         /* Check its validity issues. */
@@ -55,7 +58,7 @@ public class QuestionsService {
     public Question replace(long id, Question question) throws IllegalArgumentException,
             OpenedQuestionHavingAnswers,
             ClosedQuestionHavingNoAnswers,
-            ClosedQuestionHavingTooManyAnswers {
+            ClosedQuestionHavingTooManyAnswersException {
         // TODO: Check links between changing question's answer objects
         Optional<Question> q = questionsRepository.findById(id);
         if (q.isEmpty())
@@ -87,26 +90,23 @@ public class QuestionsService {
     private void checkQuestionValidity(Question question)
             throws ClosedQuestionHavingNoAnswers,
             OpenedQuestionHavingAnswers,
-            ClosedQuestionHavingTooManyAnswers {
-        final Integer type = question.getType();
+            ClosedQuestionHavingTooManyAnswersException {
+        final Question.Type type = question.getType();
         final Collection<Answer> answers = question.getAnswers();
         boolean empty = false;
-        if (answers == null || answers.size() == 0) empty = answers.isEmpty();
+        if (answers == null || answers.size() == 0) empty = true;
         /* Opened question having any answers */
-        if (type == 0 && !empty)
+        if (type.equals(Question.Type.OPEN) && !empty)
             throw new OpenedQuestionHavingAnswers("No answers allowed in opened-type question.");
         /* Closed (single) question having less than 2 answers */
-        else if (type == 1 && empty) {
+        else if (type.equals(Question.Type.SINGLE) && empty) {
             if (answers.size() < 2)
                 throw new ClosedQuestionHavingNoAnswers("No sufficient amount of answers attached to closed-type question. (at least two for closed-single)");
             if (answers.stream().filter(Answer::isCorrect).count() > 1)
-                throw new ClosedQuestionHavingTooManyAnswers();
+                throw new ClosedQuestionHavingTooManyAnswersException();
         }
         /* Opened question having any answers */
-        else if (type == 2 && empty)
+        else if (type.equals(Question.Type.MULTI) && empty)
             throw new ClosedQuestionHavingNoAnswers("No sufficient amount of answers attached to closed-type question. (at least one for closed-multi)");
-        else if (type < 0 || type > 2) {
-            throw new RuntimeException("Wrong question type (0: opened, 1: closed (single), 2: closed (multi)). Received = " + type);
-        }
     }
 }

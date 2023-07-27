@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import pl.alekaug.quizplatform.question.exceptions.ClosedQuestionHavingNoAnswers;
+import pl.alekaug.quizplatform.question.exceptions.ClosedQuestionHavingTooManyAnswersException;
 import pl.alekaug.quizplatform.question.exceptions.OpenedQuestionHavingAnswers;
 
 import static pl.alekaug.quizplatform.constants.RestConstants.*;
@@ -25,7 +26,8 @@ public class QuestionsManagementController {
         logger.debug(receivedQuestion);
         try {
             return questionsService.add(question).getId();
-        } catch (OpenedQuestionHavingAnswers | ClosedQuestionHavingNoAnswers | ClosedQuestionHavingTooManyAnswers e) {
+        } catch (OpenedQuestionHavingAnswers | ClosedQuestionHavingNoAnswers |
+                 ClosedQuestionHavingTooManyAnswersException e) {
             logger.error(e.getMessage());
             logger.error(receivedQuestion);
             return -1L;
@@ -39,7 +41,7 @@ public class QuestionsManagementController {
         logger.debug(receivedQuestion);
         try {
             return questionsService.replace(questionId, question).getId();
-        } catch (OpenedQuestionHavingAnswers | ClosedQuestionHavingTooManyAnswers | ClosedQuestionHavingNoAnswers e) {
+        } catch (OpenedQuestionHavingAnswers | ClosedQuestionHavingTooManyAnswersException | ClosedQuestionHavingNoAnswers e) {
             logger.error(e.getMessage());
             final String errorMsg = "There was an issue with removing question of id %d.".formatted(questionId);
             logger.error(errorMsg);

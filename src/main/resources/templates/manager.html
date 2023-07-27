@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" th:href="@{/favicon.ico}">
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>Management Panel | Quiz Platform</title>
@@ -10,6 +11,51 @@
     <link th:href="@{/css/main.css}" type="text/css" rel="stylesheet"/>
 </head>
 <body>
+
+
+<h3>Add new question</h3>
+<div>
+    <form>
+        <label>
+            Question type
+            <select name="question-type" id="question-type">
+                <option value="opened">Opened</option>
+                <option value="closed-s">Closed (single)</option>
+                <option value="closed-m">Closed (multi)</option>
+            </select>
+        </label>
+        <label>
+            Question content
+            <textarea id="question-content"></textarea>
+        </label>
+        <label>
+            Resource
+            <input type="file" accept=".mp3, .mp4, .jpg">
+        </label>
+        <div id="closed-questions-container">
+            <p>Answers</p>
+            <div id="answers-list">
+                <fieldset name="answer[]" class="new-answer-element">
+                    <label>Answer content<span class="required"></span>
+                        <input name="answer-content" type="text" required>
+                    </label>
+                    <label>
+                        <input name="correct" type="checkbox" required>&nbsp;Is correct?<span class="required"></span>
+                    </label>
+                </fieldset>
+
+            </div>
+            <button id="new-answer-button">Add new</button>
+            <button id="delete-answer-button" disabled>Delete last</button>
+        </div>
+
+        <input id="add-question-button" type="submit">
+    </form>
+</div>
+
+
+
+
 <div id="questions-container">
     <div class="question" th:each="question, iterator: ${questions}" th:attr="data-id=${question.getId()}">
         <button id="questions-remove-button" class="util-button" value="remove" title="Remove question">X</button>
@@ -22,7 +68,7 @@
             <tr class="answer" th:each="answer: ${question.answers}" th:attr="data-id=${answer.id}">
                 <td colspan="2">
                     <label>
-                        <input type="checkbox" th:checked="${answer.isCorrect}"/>
+                        <input type="checkbox" th:checked="${answer.isCorrect}" disabled/>
                     </label>
                 </td>
                 <td colspan="6" th:text="${answer.content}"></td>
@@ -31,28 +77,27 @@
     </div>
 </div>
 
-
 <form>
     <label>Question content:&nbsp;
         <textarea type="text" id="question-content" required></textarea><br>
     </label>
     <p class="error-message" id="content-error">Question must have a content.</p> <!-- Appears on validity issue -->
     <label>Question type:&nbsp; <!-- Depending on question type, question answers are adjusted -->
-        <select name="question-type" id="question-type">
-            <option value="opened">Opened</option>
-            <option value="closed-s">Closed (single)</option>
-            <option value="closed-m">Closed (multi)</option>
-        </select>
+<!--        <select name="question-type" id="question-type">-->
+<!--            <option value="opened">Opened</option>-->
+<!--            <option value="closed-s">Closed (single)</option>-->
+<!--            <option value="closed-m">Closed (multi)</option>-->
+<!--        </select>-->
     </label>
-    <div id="closed-questions-container">
-        <label>Answer correctness:&nbsp;
-            <select name="answer-correct">
-                <option value="correct">Correct</option>
-                <option value="incorrect">Incorrect</option>
-            </select>
-        </label>
-    </div>
-    <input type="button" value="Add question" id="add-question-button"/>
+<!--    <div id="closed-questions-container">-->
+<!--        <label>Answer correctness:&nbsp;-->
+<!--            <select name="answer-correct">-->
+<!--                <option value="correct">Correct</option>-->
+<!--                <option value="incorrect">Incorrect</option>-->
+<!--            </select>-->
+<!--        </label>-->
+<!--    </div>-->
+<!--    <input type="button" value="Add question" id="add-question-button"/>-->
     <input type="button" value="Delete all questions" id="remove-questions-button"/>
     <input type="button" value="Quiz preview" id="quiz-preview-button"/>
 </form>

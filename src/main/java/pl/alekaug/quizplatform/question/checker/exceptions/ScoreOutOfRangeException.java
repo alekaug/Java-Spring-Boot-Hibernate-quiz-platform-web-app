@@ -1,4 +1,4 @@
-package pl.alekaug.quizplatform.question.checker;
+package pl.alekaug.quizplatform.question.checker.exceptions;
 
 public class ScoreOutOfRangeException extends Exception {
     public ScoreOutOfRangeException() { super(); }

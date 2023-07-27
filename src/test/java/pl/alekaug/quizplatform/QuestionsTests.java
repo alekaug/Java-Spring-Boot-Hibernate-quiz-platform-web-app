@@ -54,10 +54,9 @@ public class QuestionsTests {
 
     @Test
     void addClosedQuestionWithoutAnswers() {
-        Question question = Question.builder()
+        Question question = Question.builder(Question.Type.SINGLE)
                 .content("Closed-type question without answers is not allowed.")
                 .answer(null)
-                .type(1)
                 .build();
         ObjectMapper mapper = new ObjectMapper();
         assertThrows(ServletException.class, () -> {
@@ -73,7 +72,7 @@ public class QuestionsTests {
 
     @Test
     void addOpenedQuestionWithAnswers() {
-        Question question = Question.builder()
+        Question question = Question.builder(Question.Type.OPEN)
                 .content("Opened-type question with answers is not allowed.")
                 .answer(Answer.builder().content("I am the only answer.").correct(true).build())
                 .build();

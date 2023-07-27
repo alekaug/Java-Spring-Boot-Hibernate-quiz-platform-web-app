@@ -20,8 +20,8 @@ public class QuestionsManagerController {
     @Autowired
     private QuestionsManagementController questionsManagementController;
 
-    private static final String MANAGER_PATH = "/manager";
-    private static final String CREATE_QUESTION_PATH = "/manager/create-question";
+    public static final String MANAGER_PATH = "/manager";
+    public static final String CREATE_QUESTION_PATH = "/manager/create-question";
     @GetMapping(path = MANAGER_PATH)
     public String questionsManager(Model model) {
         List<Question> questions = questionsRepository.findAll();

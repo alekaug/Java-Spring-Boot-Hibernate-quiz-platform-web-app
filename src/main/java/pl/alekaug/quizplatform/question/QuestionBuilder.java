@@ -6,11 +6,31 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class QuestionBuilder {
-    private final Question question;
+    private static final String OPEN = "open";
+    private static final String SINGLE = "single";
+    private static final String MULTI = "multi";
 
-    public QuestionBuilder() {
-        question = new Question();
-        question.setId(null);
+    private final Question question = new Question();
+
+
+//    protected QuestionBuilder(String type) {
+//        switch (type) {
+//            case SINGLE:
+//                question = new SingleClosedQuestion();
+//                break;
+//            case MULTI:
+//                question = new MultiClosedQuestion();
+//                break;
+//            case OPEN:
+//            default:
+//                question = new OpenedQuestion();
+//                break;
+//        }
+////        question.setId(null);
+//    }
+
+    protected QuestionBuilder(Question.Type type) {
+        question.setType(type);
     }
 
     public QuestionBuilder id(Long id) {
@@ -20,11 +40,6 @@ public class QuestionBuilder {
 
     public QuestionBuilder content(String content) {
         question.setContent(content);
-        return this;
-    }
-
-    public QuestionBuilder type(Integer type) {
-        question.setType(type);
         return this;
     }
 

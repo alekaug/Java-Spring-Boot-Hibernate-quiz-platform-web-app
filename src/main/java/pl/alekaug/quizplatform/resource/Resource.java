@@ -11,7 +11,7 @@ import static pl.alekaug.quizplatform.constants.DatabaseConstants.*;
 @Table( name = RESOURCES_TABLE )
 @Data public class Resource {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column( name = RESOURCE_ID_COLUMN, nullable = false )
+    @Column(name = RESOURCE_ID_COLUMN, nullable = false)
     @JsonIgnore
     private long id;
 
@@ -28,4 +28,6 @@ import static pl.alekaug.quizplatform.constants.DatabaseConstants.*;
     public enum Type {
         AUDIO, VIDEO, IMAGE
     }
+
+    public Resource() { }
 }

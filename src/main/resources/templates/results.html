@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="icon" th:href="@{/favicon.ico}">
     <meta charset="UTF-8">
-    <!-- <link rel="icon" type="image/svg+xml" href="/logo.svg"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/dialog.css">
@@ -12,6 +12,7 @@
     <title>Results | Quiz Platform</title>
 </head>
 <body>
-    <h1 th:text="'Congratulations! You\'ve got ' + ${score} + '%'"></h1>
+    <h1>Your result.</h1>
+    <h2 th:text="${result}"></h2>
 </body>
 </html>

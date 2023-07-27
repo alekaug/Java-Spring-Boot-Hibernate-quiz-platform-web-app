@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8">
-    <!-- <link rel="icon" type="image/svg+xml" href="/logo.svg"> -->
+    <link rel="icon" th:href="@{/favicon.ico}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/dialog.css">
@@ -12,7 +12,7 @@
     <title>Quiz | Quiz Platform</title>
   </head>
   <body>
-    <dialog>
+    <dialog th:if="${dialogOpen}" open>
       <div id="dialog-back" class="blurred"></div>
       <div id="dialog-front">
         <header>
@@ -60,14 +60,14 @@
               </figure>
             </div>
 
-            <div th:switch="${question.type}">
-              <div class="answer" th:case="1">
+            <div th:switch="${question.type.name()}">
+              <div class="answer" th:case="'SINGLE'">
                 <label th:each="answer : ${question.answers}">
                   <input type="radio" th:name="${question.id}" th:value="${answer.id}" required th:text="'&nbsp;' + ${answer.content}">
                 </label>
               </div>
 
-              <div class="answer" th:case="2">
+              <div class="answer" th:case="'MULTI'">
                 <label th:each="answer : ${question.answers}">
                   <input type="checkbox" th:name="${question.id}" th:value="${answer.id}" th:text="'&nbsp;' + ${answer.content}">
                 </label>
@@ -81,7 +81,8 @@
             </div>
           </fieldset>
           <!-- Submit button -->
-          <input id="submit" type="submit" value="Submit">
+          <input th:if="${questions.size()} != 0" id="submit" type="submit" value="Submit">
+          <p th:if="${questions.isEmpty() || questions == null}" class="center"><b>Warning!</b><br>There are no questions. Go <a href="/manager">here</a> to add some.</p>
         </form>
       </main>
       <footer>
